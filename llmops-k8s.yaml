@@ -1,0 +1,46 @@
+apiVersion: v1
+kind: Namespace
+metadata:
+  name: anime-llm-space
+
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: llmops-app
+  namespace: anime-llm-space
+  labels:
+    app: llmops
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: llmops
+  template:
+    metadata:
+      labels:
+        app: llmops
+    spec:
+      containers:
+      - name: llmops-container
+        image: llmops-app:latest  # Use local image
+        imagePullPolicy: IfNotPresent
+        ports:
+          - containerPort: 8501
+        envFrom:
+          - secretRef:
+              name: llmops-secrets 
+
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: llmops-service
+  namespace: anime-llm-space
+spec:
+  type: LoadBalancer
+  selector:
+    app: llmops
+  ports:
+    - protocol: TCP
+      port: 80
+      targetPort: 8501
