@@ -17,8 +17,12 @@ RUN apt-get update && apt-get install -y \
 ## Copying ur all contents from local to app
 COPY . .
 
+RUN python build_pipeline.py
+
 ## Run setup.py
 RUN pip install --no-cache-dir -e .
+
+RUN python pipeline/build_pipeline.py
 
 # Used PORTS
 EXPOSE 8501
