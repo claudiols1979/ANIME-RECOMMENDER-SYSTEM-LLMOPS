@@ -29,21 +29,14 @@ spec:
           - containerPort: 8501
         envFrom:
           - secretRef:
-              name: llmops-secrets
-        volumeMounts:
-          - name: chroma-storage
-            mountPath: /app/chroma_db
+              name: llmops-secrets        
         resources:
           requests:
             memory: "1Gi"
             cpu: "500m"
           limits:
             memory: "2Gi"
-            cpu: "1000m"
-      volumes:
-        - name: chroma-storage
-          persistentVolumeClaim:
-            claimName: chroma-pvc
+            cpu: "1000m"      
 
 ---
 apiVersion: v1
