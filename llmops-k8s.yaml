@@ -3,6 +3,7 @@ kind: Namespace
 metadata:
   name: anime-llm-space
 
+---
 apiVersion: apps/v1
 kind: Deployment
 metadata:
@@ -22,13 +23,27 @@ spec:
     spec:
       containers:
       - name: llmops-container
-        image: llmops-app:latest  # Use local image
+        image: llmops-app:latest
         imagePullPolicy: IfNotPresent
         ports:
           - containerPort: 8501
         envFrom:
           - secretRef:
-              name: llmops-secrets 
+              name: llmops-secrets
+        volumeMounts:
+          - name: chroma-storage
+            mountPath: /app/chroma_db
+        resources:
+          requests:
+            memory: "1Gi"
+            cpu: "500m"
+          limits:
+            memory: "2Gi"
+            cpu: "1000m"
+      volumes:
+        - name: chroma-storage
+          persistentVolumeClaim:
+            claimName: chroma-pvc
 
 ---
 apiVersion: v1
